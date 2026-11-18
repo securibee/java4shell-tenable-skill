@@ -1,0 +1,10 @@
+[
+  {"asset_id": "a-201", "asset": "app01", "ip": "192.0.2.11", "fqdn": "app01.example.test",
+   "name": "RHEL 9 : java-17-openjdk (RHSA-2099:0001)", "state": "OPEN", "asset_class": "DEVICE"},
+  {"asset_id": "a-301", "asset": "ctr01", "ip": "192.0.2.31", "fqdn": "ctr01.example.test",
+   "name": "RHEL 9 : java-17-openjdk (RHSA-2099:0001)", "state": "OPEN", "asset_class": "CONTAINER"},
+  {"asset_id": "a-301", "asset": "ctr01", "ip": "192.0.2.31", "fqdn": "ctr01.example.test",
+   "name": "RHEL 9 : java-17-openjdk (RHSA-2099:0002)", "state": "NEW", "asset_class": "CONTAINER"},
+  {"asset_id": "a-302", "asset": "ctr02", "ip": "192.0.2.32", "fqdn": "ctr02.example.test",
+   "name": "Ubuntu : openjdk-21-jre-headless vulnerability", "state": "FIXED", "asset_class": "CONTAINER"}
+]

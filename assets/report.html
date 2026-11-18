@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Java4Shell Exposure Report</title>
+<!-- Design tokens, type and print layout follow the CyberAgents Exchange website's datasheet style. -->
+<style>
+@font-face { font-family: "Work Sans"; font-style: normal; font-weight: 300 500; font-display: swap;
+  src: url(data:font/woff2;base64,$font) format("woff2"); }
+:root {
+  --bg-primary: #1E2426; --bg-secondary: #2B2F31; --bg-tertiary: #44494B;
+  --accent-primary: #E7FF00; --accent-secondary: #FF8837;
+  --text-primary: #FFFFFF; --text-secondary: #969696; --text-dark: #192124;
+  --rule: rgba(255, 255, 255, 0.1);
+}
+* { box-sizing: border-box; }
+html { background: var(--bg-primary); color: var(--text-primary); }
+body { margin: 0; font: 400 14px/1.5 "Work Sans", system-ui, sans-serif; letter-spacing: -0.03em;
+  background: var(--bg-primary); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+::selection { background: var(--accent-primary); color: var(--text-dark); }
+.sheet { max-width: 1200px; margin: 0 auto; }
+.caption { font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; }
+.clip-corner { clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%); }
+code { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0;
+  background: rgba(255, 255, 255, 0.06); padding: 1px 5px; }
+
+/* Header band: the datasheet's dark gradient, Tenable lockup left. */
+.band { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  padding: 20px 28px; background: linear-gradient(135deg, #1E2426 0%, #2B3436 50%, #1a2022 100%);
+  border-bottom: 1px solid var(--bg-tertiary); }
+.band img { height: 34px; width: auto; display: block; }
+.band-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.type-tag { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.14em;
+  padding: 4px 10px; border: 1px solid currentColor; color: var(--accent-primary); }
+.powered { font-size: 11px; color: rgba(255, 255, 255, 0.7); padding-left: 16px;
+  border-left: 1px solid rgba(255, 255, 255, 0.2); }
+.print-btn { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; font: inherit;
+  font-size: 12px; font-weight: 500; color: var(--text-secondary); background: none; cursor: pointer;
+  border: 1px solid rgba(150, 150, 150, 0.2); transition: color 150ms, border-color 150ms; }
+.print-btn:hover { color: var(--text-primary); border-color: rgba(150, 150, 150, 0.4); }
+.print-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+.print-btn svg { width: 14px; height: 14px; }
+
+/* Hero: light title, accent keyline, metadata row. */
+.hero { padding: 32px 28px 0; }
+.eyebrow { font-size: 11px; color: var(--accent-primary); margin: 0 0 8px; }
+h1 { font-size: clamp(28px, 4vw, 40px); font-weight: 300; line-height: 1.15; margin: 0 0 8px; }
+.lede { font-weight: 300; color: rgba(255, 255, 255, 0.7); max-width: 80ch; margin: 0; font-size: 16px; }
+.lede::after { content: ""; display: block; width: 50px; height: 3px; background: var(--accent-primary); margin-top: 16px; }
+.meta { display: flex; flex-wrap: wrap; gap: 12px 40px; margin: 20px 0 24px; padding: 12px 0;
+  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.meta dt { font-size: 10px; color: var(--text-secondary); }
+.meta dd { margin: 2px 0 0; font-weight: 500; font-variant-numeric: tabular-nums; }
+
+/* Status tiles: notched cards, top keyline in the status colour. */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; padding: 0 28px; }
+.tile { background: var(--bg-secondary); border-top: 3px solid var(--c); padding: 14px 16px; }
+.tile b { display: block; font-size: 32px; font-weight: 300; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.tile span { font-size: 10px; color: var(--text-secondary); }
+.tile .pairs { display: block; margin-top: 2px; font-size: 11px; text-transform: none; letter-spacing: -0.01em;
+  font-weight: 300; font-variant-numeric: tabular-nums; }
+
+/* Impact ceiling: one line under the tiles. */
+.impact { margin: 16px 28px 0; padding: 10px 14px; font-weight: 300; color: rgba(255, 255, 255, 0.8);
+  border-left: 2px solid #91243E; background: rgba(145, 36, 62, 0.12); max-width: 100ch; }
+.impact b { font-weight: 500; }
+
+/* Mitigations: the HexaCta panel, iris watermark. */
+.panel { position: relative; overflow: hidden; margin: 24px 28px; padding: 24px; background: var(--bg-secondary);
+  border: 1px solid var(--bg-tertiary); border-left: 2px solid var(--accent-secondary); }
+.panel .iris { position: absolute; right: -16px; top: 50%; transform: translateY(-50%); width: 200px; aspect-ratio: 1;
+  opacity: 0.06; pointer-events: none; background: url("data:image/png;base64,$iris") center / contain no-repeat; }
+.panel > * { position: relative; }
+.panel .eyebrow { color: var(--accent-secondary); }
+.panel h2 { font-size: 18px; font-weight: 400; margin: 0 0 8px; }
+.panel ul { margin: 0; padding-left: 18px; font-weight: 300; color: rgba(255, 255, 255, 0.75); max-width: 90ch; }
+.panel li { margin-bottom: 4px; }
+.panel li::marker { color: var(--accent-secondary); }
+.panel p.body { margin: 0 0 8px; font-weight: 300; color: rgba(255, 255, 255, 0.75); max-width: 90ch; }
+.panel p.body:last-child { margin-bottom: 0; }
+.panel a { color: var(--text-primary); text-decoration-color: var(--accent-secondary); text-underline-offset: 2px; }
+.panel.look { border-left-color: var(--accent-primary); }
+.panel.look .eyebrow { color: var(--accent-primary); }
+.panel.look li::marker { color: var(--accent-primary); }
+
+/* Findings table. */
+.findings { padding: 0 28px; }
+.findings h2 { font-size: 18px; font-weight: 400; margin: 0 0 12px; }
+.findings h2 span { color: var(--text-secondary); font-weight: 300; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--bg-tertiary); }
+table { border-collapse: collapse; width: 100%; font-size: 12px; font-variant-numeric: tabular-nums; }
+th { position: sticky; top: 0; background: var(--bg-secondary); color: var(--text-secondary); text-align: left;
+  font-size: 10px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; padding: 10px;
+  border-bottom: 1px solid var(--bg-tertiary); cursor: pointer; white-space: nowrap; }
+th:hover { color: var(--text-primary); }
+td { padding: 8px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); vertical-align: top; }
+tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
+td.nowrap { white-space: nowrap; }
+td.name { min-width: 220px; }
+td.reason { min-width: 200px; }
+td.path { min-width: 180px; overflow-wrap: anywhere; }
+td.cond { white-space: nowrap; cursor: help; }
+td.cond.yes { color: #FF8A9C; font-weight: 500; }
+td.cond.no { color: var(--text-secondary); }
+.status { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; font-weight: 500; }
+.swatch { width: 8px; height: 8px; flex: none; background: var(--c); box-shadow: inset 0 0 0 1px rgba(127, 127, 127, 0.4); }
+.empty { padding: 24px 10px; color: var(--text-secondary); }
+
+/* Footer: the datasheet's Hexa bar, about block and URL bar. */
+.foot { margin-top: 32px; padding: 18px 28px 14px; background: var(--bg-secondary); border-top: 2px solid var(--accent-primary); }
+.foot-hexa { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--rule); }
+.foot-hexa p { margin: 0; font-size: 13px; }
+.foot-hexa b { font-weight: 500; }
+.cta { flex: none; display: inline-block; padding: 8px 16px; background: var(--accent-primary); color: var(--text-dark);
+  font-size: 13px; font-weight: 500; text-decoration: none; transition: background 150ms; }
+.cta:hover { background: rgba(231, 255, 0, 0.9); }
+.foot-about h3 { font-size: 11px; margin: 0 0 4px; }
+.foot-about p { font-size: 12px; color: var(--text-secondary); margin: 0; max-width: 100ch; font-weight: 300; }
+.foot-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--rule); font-size: 11px; color: var(--text-secondary); }
+.foot-bar img { height: 20px; width: auto; display: block; }
+.lockup-dark { display: none !important; }
+
+@media (max-width: 640px) {
+  .band, .hero, .tiles, .findings, .foot { padding-left: 16px; padding-right: 16px; }
+  .panel { margin-left: 16px; margin-right: 16px; }
+  .powered { border-left: none; padding-left: 0; }
+}
+
+/* Print: white sheet with dark header band, as print.css does for the solution brief. */
+@media print {
+  @page { size: letter landscape; margin: 12mm 0; }
+  @page :first { margin-top: 0; }
+  html, body { background: #FFFFFF !important; color: #1E2426 !important; font-size: 9pt; line-height: 1.45; }
+  .sheet { max-width: none; }
+  .print-btn { display: none !important; }
+  .band { padding: 20pt 28pt; border-bottom: none; }
+  .band img { height: 30pt; }
+  .hero { padding: 22pt 28pt 0; }
+  .eyebrow, .panel .eyebrow, .panel.look .eyebrow { color: #5A6062; font-size: 7pt; letter-spacing: 0.08em; }
+  h1 { font-size: 24pt; color: #1E2426; }
+  .lede { font-size: 10pt; color: #1E2426; opacity: 0.75; }
+  .meta { border-color: rgba(30, 36, 38, 0.1); margin: 12pt 0 14pt; padding: 8pt 0; }
+  .meta dt { color: #5A6062; font-size: 6pt; letter-spacing: 0.08em; }
+  .meta dd { font-size: 9pt; }
+  .tiles { padding: 0 28pt; gap: 8pt; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 1fr; }
+  .tile { background: #f3f3f3; border-top: 2.5pt solid var(--c); padding: 8pt 10pt; }
+  .tile b { font-size: 20pt; color: #1E2426; }
+  .tile span { color: #5A6062; font-size: 6.5pt; }
+  .panel { margin: 14pt 28pt; padding: 12pt 14pt; background: #f8f8f8; border: 0.5pt solid rgba(30, 36, 38, 0.1);
+    border-left: 2pt solid var(--accent-secondary); break-inside: avoid; }
+  .panel .iris { display: none; }
+  .panel h2 { font-size: 10pt; font-weight: 500; color: #1E2426; }
+  .panel ul, .panel p.body { color: #1E2426; font-size: 8.5pt; }
+  .panel a { color: #1E2426; }
+  .panel.look { border-left-color: #1E2426; }
+  .panel.look li::marker { color: #1E2426; }
+  .impact { margin: 10pt 28pt 0; padding: 6pt 10pt; color: #1E2426; font-size: 8.5pt;
+    background: rgba(145, 36, 62, 0.06); border-left: 2pt solid #91243E; }
+  .tile .pairs { font-size: 7pt; color: #5A6062; }
+  td.cond.yes { color: #91243E; }
+  td.cond.no { color: #5A6062; }
+  code { font-size: 7.5pt; background: rgba(30, 36, 38, 0.06); }
+  .findings { padding: 0 28pt; break-before: page; }
+  .findings h2 { font-size: 10pt; font-weight: 500; color: #1E2426; }
+  .findings h2 span { color: #5A6062; }
+  .table-wrap { overflow: visible; border: none; }
+  table { font-size: 7.5pt; }
+  thead { display: table-header-group; }
+  th { position: static; background: #1E2426 !important; color: #FFFFFF; font-size: 6.5pt; padding: 5pt 4.5pt; border: none; }
+  td { color: #1E2426; padding: 4pt 4.5pt; border-bottom: 0.5pt solid rgba(30, 36, 38, 0.1); }
+  tr { break-inside: avoid; }
+  td:not(.nowrap) { overflow-wrap: break-word; }
+  td.path { min-width: 90pt; overflow-wrap: anywhere; }
+  td.reason { min-width: 100pt; }
+  .status { white-space: normal; align-items: flex-start; }
+  .swatch { margin-top: 2pt; }
+  .foot { margin-top: 18pt; padding: 14pt 28pt 12pt; background: linear-gradient(180deg, #f8f8f8 0%, #f0f0f0 100%) !important;
+    color: #1E2426; break-inside: avoid; }
+  .foot-hexa { border-color: rgba(30, 36, 38, 0.1); }
+  .foot-hexa p { font-size: 7.5pt; }
+  .cta { background: none; color: #1E2426; border: 0.75pt solid #1E2426; font-size: 7pt; padding: 3pt 8pt; }
+  .foot-about h3 { font-size: 7pt; color: #1E2426; }
+  .foot-about p { font-size: 7pt; color: #5A6062; }
+  .foot-bar { border-color: rgba(30, 36, 38, 0.15); font-size: 7pt; color: #5A6062; }
+  .foot-bar img { height: 14pt; }
+  .lockup-white-foot { display: none !important; }
+  .lockup-dark { display: block !important; }
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <header class="band">
+    <img src="data:image/svg+xml;base64,$lockup_white" alt="Tenable">
+    <div class="band-right">
+      <span class="type-tag">Exposure Report</span>
+      <span class="powered caption">Powered by Hexa AI, Part of Tenable One</span>
+      <button type="button" class="print-btn" onclick="window.print()" aria-label="Save as PDF">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+        PDF
+      </button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow caption">Vulnerability of Interest · CVE-2026-114938</p>
+    <h1>Java4Shell exposure report</h1>
+    <p class="lede">Memory corruption in the HotSpot JVM's Base64 decoder on x86-64 CPUs with AVX-512 VBMI. Scored CVSS 3.1 8.1 by Oracle and OpenJDK, and CVSS 4.0 9.2 by Calif, which found it. These findings come from Tenable One Vulnerability Management through the Tenable Hexa AI MCP.</p>
+    <dl class="meta">
+      <div><dt class="caption">Generated</dt><dd>$generated</dd></div>
+      <div><dt class="caption">Assets</dt><dd>$asset_count</dd></div>
+      <div><dt class="caption">Java installs</dt><dd>$row_count</dd></div>
+      <div><dt class="caption">Fixed builds as of</dt><dd>$fixed_as_of</dd></div>
+    </dl>
+  </section>
+
+  <section class="tiles" aria-label="Assets by verdict">$tiles</section>
+
+  <p class="impact"><b>Impact.</b> Crash (denial of service) is readily achievable and memory disclosure has been reproduced. Remote code execution is claimed by Calif and one other researcher; no exploit is public as of 2026-11-18.</p>
+
+  <section class="panel">
+    <span class="iris" aria-hidden="true"></span>
+    <p class="eyebrow caption">Limits of the data</p>
+    <h2>What Tenable data can't see</h2>
+    <p class="body">Exposure needs four things at once: an affected Java build, x86-64, a CPU that exposes AVX-512 VBMI, and the JVM's Base64 intrinsic left on. Tenable reports the Java build when its plugin output can be read, and the architecture only for some hosts. It can rule a CPU out by model, but never confirm one.</p>
+    <p class="body">Tenable's plugins don't report CPU feature flags or a running JVM's flags yet, so installs on affected builds show as "Affected build – CPU unconfirmed" until they do.</p>
+    <p class="body">"Unknown – verify" means Tenable data could not settle the build itself: a version string that is ambiguous at the fixed build, plugins that disagree on the version, a plugin output that was not retrieved or was cut off before all its installs, or a Tenable CVE plugin that flags an asset the version rules would clear. A mitigation option seen on a process command line is shown as evidence only; confirm it on the running JVM with <code>jcmd</code>.</p>
+  </section>
+
+  <section class="panel">
+    <span class="iris" aria-hidden="true"></span>
+    <p class="eyebrow caption">Interim mitigations</p>
+    <h2>Patch to the vendor's fixed build. Until then, these JVM options keep the vulnerable path off.</h2>
+    <ul>
+      <li><code>-XX:-UseBASE64Intrinsics</code> (preferred: turns off only the accelerated Base64 path).</li>
+      <li><code>-XX:UseAVX=2</code> (turns off AVX-512; x86-64 only, Java on ARM64 will not start with it).</li>
+      <li>Do not use <code>-XX:DisableIntrinsic=_base64_decodeBlock</code>: without <code>-XX:+UnlockDiagnosticVMOptions</code> the JVM will not start.</li>
+      <li>Confirm on the running JVM with <code>jcmd &lt;pid&gt; VM.flags -all</code>, and remove the option after patching.</li>
+    </ul>
+  </section>
+
+  <section class="panel look">
+    <p class="eyebrow caption">Where else to look</p>
+    <h2>Java that this report may not cover</h2>
+    <ul>
+      <li>In Tenable, <b>Explore &gt; Software</b>, for Java installs across your inventory.</li>
+      <li>The <a href="$java_report">Java Visibility and Exposures</a> report.</li>
+      <li>In Attack Surface Management, the filter <code>Programming Languages contains Java</code>, for internet-facing assets.</li>
+    </ul>
+  </section>
+
+  <section class="findings">
+    <h2>Java installs <span>· $row_count rows</span></h2>
+    <div class="table-wrap">
+      <table id="t">
+        <thead><tr>$thead</tr></thead>
+        <tbody>$tbody</tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="foot-hexa">
+      <p><b>Java4Shell exposure report</b>: data from the Tenable Hexa AI MCP, part of Tenable One</p>
+      <a class="cta" href="$faq">Read the Tenable Research FAQ</a>
+    </div>
+    <div class="foot-about">
+      <h3 class="caption">About this report</h3>
+      <p>Every row is one Java install on one asset. Verdicts come from the Java version, install path, architecture, CPU model and CVE findings in Tenable data, and nothing else. An unknown input never counts as not impacted.</p>
+    </div>
+    <div class="foot-bar">
+      <img class="lockup-white-foot" src="data:image/svg+xml;base64,$lockup_white" alt="Tenable">
+      <img class="lockup-dark" src="data:image/svg+xml;base64,$lockup_dark" alt="Tenable">
+      <span>Generated $generated</span>
+    </div>
+  </footer>
+</div>
+<script>
+document.querySelectorAll("#t th").forEach(function (th, i) {
+  th.addEventListener("click", function () {
+    var tb = th.closest("table").tBodies[0], rows = Array.from(tb.rows);
+    var dir = th.dataset.dir = th.dataset.dir === "1" ? "-1" : "1";
+    rows.sort(function (a, b) {
+      return a.cells[i].innerText.localeCompare(b.cells[i].innerText, undefined, { numeric: true }) * dir;
+    });
+    rows.forEach(function (r) { tb.appendChild(r); });
+  });
+});
+</script>
+</body>
+</html>

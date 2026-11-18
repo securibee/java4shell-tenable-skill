@@ -1,0 +1,17 @@
+[
+  {
+    "asset_id": "a-201",
+    "plugin_id": "382091",
+    "state": "ACTIVE"
+  },
+  {
+    "asset_id": "a-202",
+    "plugin_id": "382045",
+    "state": "FIXED"
+  },
+  {
+    "asset_id": "a-206",
+    "plugin_id": "382489",
+    "state": "ACTIVE"
+  }
+]

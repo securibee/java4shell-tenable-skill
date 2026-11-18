@@ -1,0 +1,65 @@
+[
+  {
+    "asset_id": "a-101", "asset": "app01", "ip": "192.0.2.10", "fqdn": "app01.example.test",
+    "os": "Ubuntu Linux 24.04", "arch": "x64", "cpu_model": "Intel(R) Xeon(R) Platinum 8480+",
+    "virtualization": "", "java_vendor": "Eclipse Temurin", "vendor_confidence": "high",
+    "java_version_raw": "21.0.13", "java_path": "/usr/lib/jvm/java-21-openjdk-amd64",
+    "java_binary": "/usr/lib/jvm/java-21-openjdk-amd64/bin/java", "managed_by_os": true,
+    "detection_plugin": "Java Detection", "cve_plugins": [], "last_seen": "2026-11-18T09:00:00Z",
+    "plugin_output": "Path : /usr/lib/jvm/java-21-openjdk-amd64\nVersion : 21.0.13"
+  },
+  {
+    "asset_id": "a-102", "asset": "WIN01", "ip": "192.0.2.20", "fqdn": "win01.example.test",
+    "os": "Microsoft Windows Server 2022", "arch": "x64", "cpu_model": "Intel(R) Xeon(R) Gold 6430",
+    "virtualization": "VMware", "java_vendor": "Eclipse Temurin", "vendor_confidence": "high",
+    "java_version_raw": "17.0.11.9", "java_path": "C:\\Program Files\\Java\\jdk-17\\",
+    "java_binary": "", "managed_by_os": false,
+    "detection_plugin": "Java Detection", "cve_plugins": [], "last_seen": "2026-11-18T09:05:00Z",
+    "plugin_output": ""
+  },
+  {
+    "asset_id": "a-103", "asset": "db01", "ip": "192.0.2.30", "fqdn": "db01.example.test",
+    "os": "Oracle Linux 9", "arch": "x64", "cpu_model": "Intel(R) Xeon(R) Gold 6430",
+    "virtualization": "", "java_vendor": "Oracle Java SE", "vendor_confidence": "high",
+    "java_version_raw": "17.0.21.1+4", "java_path": "/opt/oracle/jdk-17.0.21.1",
+    "java_binary": "/opt/oracle/jdk-17.0.21.1/bin/java", "managed_by_os": false,
+    "detection_plugin": "Java Detection", "cve_plugins": [], "last_seen": "2026-11-18T09:10:00Z",
+    "plugin_output": ""
+  },
+  {
+    "asset_id": "a-104", "asset": "arm01", "ip": "192.0.2.40", "fqdn": "arm01.example.test",
+    "os": "Amazon Linux 2023", "arch": "", "cpu_model": "",
+    "virtualization": "", "java_vendor": "Amazon Corretto", "vendor_confidence": "high",
+    "java_version_raw": "21.0.5", "java_path": "/usr/lib/jvm/java-21-amazon-corretto.aarch64",
+    "java_binary": "", "managed_by_os": true,
+    "detection_plugin": "Java Detection", "cve_plugins": [], "last_seen": "2026-11-18T09:15:00Z",
+    "plugin_output": ""
+  },
+  {
+    "asset_id": "a-105", "asset": "legacy01", "ip": "192.0.2.50", "fqdn": "legacy01.example.test",
+    "os": "Debian 12", "arch": "x64", "cpu_model": "Intel(R) Xeon(R) Gold 6230 CPU @ 2.10GHz",
+    "virtualization": "", "java_vendor": "OpenJDK", "vendor_confidence": "medium",
+    "java_version_raw": "25.0.1", "java_path": "/usr/lib/jvm/java-25-openjdk-amd64",
+    "java_binary": "", "managed_by_os": true,
+    "detection_plugin": "Java Detection", "cve_plugins": [], "last_seen": "2026-11-18T09:20:00Z",
+    "plugin_output": ""
+  },
+  {
+    "asset_id": "a-106", "asset": "ci01", "ip": "192.0.2.60", "fqdn": "ci01.example.test",
+    "os": "Rocky Linux 9", "arch": "", "cpu_model": "",
+    "virtualization": "", "java_vendor": "Eclipse Temurin", "vendor_confidence": "low",
+    "java_version_raw": "21.0.5+11", "java_path": "/opt/jenkins/jre",
+    "java_binary": "", "managed_by_os": false,
+    "detection_plugin": "Java Detection", "cve_plugins": [], "last_seen": "2026-11-18T09:25:00Z",
+    "plugin_output": ""
+  },
+  {
+    "asset_id": "a-107", "asset": "build01", "ip": "192.0.2.70", "fqdn": "build01.example.test",
+    "os": "Ubuntu Linux 24.04", "arch": "x64", "cpu_model": "",
+    "virtualization": "", "java_vendor": "OpenJDK Java", "vendor_confidence": "high",
+    "java_version_raw": "21.0.13.1", "java_path": "/usr/lib/jvm/java-21-openjdk-amd64",
+    "java_binary": "", "managed_by_os": true,
+    "detection_plugin": "Java Detection", "cve_plugins": [], "last_seen": "2026-11-18T09:30:00Z",
+    "plugin_output": ""
+  }
+]
